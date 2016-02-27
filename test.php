@@ -23,7 +23,8 @@ class UAV {
 
 	function __toString()
 	{
-		return "x: " . $this->x . ", y: " . $this->y . ", angle: " . $this->phi . PHP_EOL;
+//		return "x: " . $this->x . ", y: " . $this->y . ", angle: " . $this->phi . PHP_EOL;
+		return "" . $this->x . ", " . $this->y . ", angle: " . $this->phi . PHP_EOL;
 	}
 
 }
@@ -45,34 +46,6 @@ class Control {
 		$this->curvature = $curvature;
 	}
 
-}
-
-function oldSystem($uavZ, $curvature) {
-	$uav_size = 0.5;
-	$time_step = 0.05;
-	$end_time = 0.5;
-
-	$control = new \stdClass();
-	$control->step = 30;
-	$control->turn = $curvature;
-
-	$dPhi = ($control->step / $uav_size) * tan((float) $control->turn);	//dPhi se nemění v rámci vnitřního cyklu, takže stačí spošítat jen jednou
-
-	$x = 0;
-	$y = 0;
-
-	for ($i = $time_step; $i < $end_time; $i += $time_step)
-	{
-		//calculate derivatives from inputs
-		$dx = $control->step * cos((float) $uavZ);	//pokud jsme ve 2D, pak jediná možná rotace je rotace okolo osy Z
-		$dy = $control->step * sin((float) $uavZ);	//input není klasický bod se souřadnicemi X, Y, ale objekt se dvěma čísly, odpovídajícími dvěma vstupům do car_like modelu
-
-		//calculate current state variables
-		$x += $dx * $time_step;
-		$y += $dy * $time_step;
-		$uavZ += $dPhi * $time_step;
-	}
-	return [$x, $y, $uavZ];
 }
 
 function newSystem($uavZ, $curvature) {
@@ -105,26 +78,7 @@ function calculateNewState(UAV $uav, Control $control) {
 	return new UAV($uav->x + $newCoords[0], $uav->y + $newCoords[1], $newCoords[2]);
 }
 
-//echo "phi :" . PHP_EOL;
-//echo $phi = 0 . PHP_EOL;
-//echo "old curvature :" . PHP_EOL;
-echo $curvature1 = pi()/150 . PHP_EOL;
-//echo "new curvature :" . PHP_EOL;
-echo $curvature2 = 2 * tan((float) $curvature1) . PHP_EOL;
-//echo "old system" . PHP_EOL;
-//echo implode(', ', oldSystem($phi, $curvature1)) . PHP_EOL;
-//echo "new system" . PHP_EOL;
-//echo implode(', ', newSystem($phi, $curvature2)) . PHP_EOL;
-//
-//echo "old system 4 steps:";
-//$step1 = oldSystem((float) 0, $curvature1);
-//$step2 = oldSystem((float) $step1[2], $curvature1);
-//$step3 = oldSystem((float) $step2[2], $curvature1);
-//$step4 = oldSystem((float) $step3[2], $curvature1);
-//echo "step 1: " . PHP_EOL . $step1[0] . ', ' . $step1[1] . PHP_EOL;
-//echo "step 2: " . PHP_EOL . ($step1[0] + $step2[0]) . ', ' . ($step1[1] + $step2[1]) . PHP_EOL;
-//echo "step 3: " . PHP_EOL . ($step1[0] + $step2[0] + $step3[0]) . ', ' . ($step1[1] + $step2[1] + $step3[1]) . PHP_EOL;
-//echo "step 4: " . PHP_EOL . ($step1[0] + $step2[0] + $step3[0] + $step4[0]) . ', ' . ($step1[1] + $step2[1] + $step3[1] + $step4[1]) . PHP_EOL;
+//echo $curvature2 = 0.02 . PHP_EOL;
 //
 //echo "new system 4 steps:";
 //$step1 = newSystem((float) 0, $curvature2);
@@ -136,8 +90,79 @@ echo $curvature2 = 2 * tan((float) $curvature1) . PHP_EOL;
 //echo "step 3: " . PHP_EOL . ($step1[0] + $step2[0] + $step3[0]) . ', ' . ($step1[1] + $step2[1] + $step3[1]) . ", angle: " . $step3[2] . PHP_EOL;
 //echo "step 4: " . PHP_EOL . ($step1[0] + $step2[0] + $step3[0] + $step4[0]) . ', ' . ($step1[1] + $step2[1] + $step3[1] + $step4[1]) . ", angle: " . $step4[2] . PHP_EOL;
 
-$uav = new UAV(80, 50, pi()/2);
-echo $uav;
-echo calculateNewState($uav, new Control(20, - $curvature2));
-echo calculateNewState($uav, new Control(20, 0));
-echo calculateNewState($uav, new Control(20, $curvature2));
+//$uav = new UAV(80, 50, pi()/2);
+//echo $uav;
+//echo $uav2 = calculateNewState($uav, new Control(20, - $curvature2));
+//echo calculateNewState($uav2, new Control(20, - $curvature2));
+////echo calculateNewState($uav, new Control(20, $curvature2));
+//
+//echo "curvature = " . $curvature2;
+//echo "radius = " . 1/$curvature2;
+
+$pathFiles = [
+	'path1456102594.json',
+	'path1456102803.json',
+	'path1456154221.json',
+	'path1456154553.json',
+	'path-02-22-16-39-16.json',
+	'path-02-22-16-44-16.json',
+	'path-02-27-22-56-16.json',
+	'path-02-27-22-56-16-resampled.json'
+];
+foreach ($pathFiles as $pathFile) {
+	$data = json_decode(file_get_contents($pathFile), true);
+	$path = $data['path'];
+	$timeStep = 0.5;
+	$sampleCount = count($path);
+	$totalTime = $timeStep * $sampleCount;	//total time to fly the path
+	$currentFrequency = $sampleCount / $totalTime;	//samples per second
+	$maxFrequency = 70;
+	$maxSampleCount = 2700;
+	$maxAvailableFrequency = $maxSampleCount / $totalTime;
+	$newFrequency = min($maxAvailableFrequency, $maxFrequency);	//pokud je maxFrequency větší než maxAvailableFrequency, bude nastavena maxAvailable, jinak maaxFrequency
+	$ratio = floor($newFrequency / $currentFrequency);	//bude ratio krát více vzorků
+	echo 'sample count: ' . $sampleCount . PHP_EOL;
+	echo 'ratio: ' . $ratio . PHP_EOL;
+	echo 'new sample count: ' . $sampleCount * $ratio . PHP_EOL;
+	echo 'new frequency: ' . $newFrequency . PHP_EOL;
+	echo PHP_EOL;
+}
+
+//echo angleToLeft(0, 1) . PHP_EOL;
+//echo angleToRight(0, 1) . PHP_EOL;
+//
+//echo angleToLeft(0, 2) . PHP_EOL;
+//echo angleToRight(0, 2) . PHP_EOL;
+//
+//echo angleToLeft(2, 1) . PHP_EOL;
+//echo angleToRight(2, 1) . PHP_EOL;
+//
+//echo angleToLeft(1, 2) . PHP_EOL;
+//echo angleToRight(1, 2) . PHP_EOL;
+
+function angleToLeft($ang1, $ang2) {
+	$TOLERANCE = 10e-10;
+	$ret = $ang2 - $ang1;
+
+	while ($ret > 2 * M_PI - $TOLERANCE) {
+		$ret -= 2 * M_PI;
+	}
+	while ($ret < - $TOLERANCE) {
+		$ret += 2 * M_PI;
+	}
+	return $ret;
+}
+
+function angleToRight($ang1, $ang2) {
+	$TOLERANCE = 10e-10;
+	$ret = $ang2 - $ang1;
+
+	while ($ret > $TOLERANCE) {
+		$ret -= 2 * M_PI;
+	}
+	while ($ret < -2 * M_PI + $TOLERANCE) {
+		$ret += 2 * M_PI;
+	}
+
+	return $ret;
+}
