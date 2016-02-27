@@ -99,34 +99,36 @@ function calculateNewState(UAV $uav, Control $control) {
 //echo "curvature = " . $curvature2;
 //echo "radius = " . 1/$curvature2;
 
-$pathFiles = [
-	'path1456102594.json',
-	'path1456102803.json',
-	'path1456154221.json',
-	'path1456154553.json',
-	'path-02-22-16-39-16.json',
-	'path-02-22-16-44-16.json',
-	'path-02-27-22-56-16.json',
-	'path-02-27-22-56-16-resampled.json'
-];
-foreach ($pathFiles as $pathFile) {
-	$data = json_decode(file_get_contents($pathFile), true);
-	$path = $data['path'];
-	$timeStep = 0.5;
-	$sampleCount = count($path);
-	$totalTime = $timeStep * $sampleCount;	//total time to fly the path
-	$currentFrequency = $sampleCount / $totalTime;	//samples per second
-	$maxFrequency = 70;
-	$maxSampleCount = 2700;
-	$maxAvailableFrequency = $maxSampleCount / $totalTime;
-	$newFrequency = min($maxAvailableFrequency, $maxFrequency);	//pokud je maxFrequency větší než maxAvailableFrequency, bude nastavena maxAvailable, jinak maaxFrequency
-	$ratio = floor($newFrequency / $currentFrequency);	//bude ratio krát více vzorků
-	echo 'sample count: ' . $sampleCount . PHP_EOL;
-	echo 'ratio: ' . $ratio . PHP_EOL;
-	echo 'new sample count: ' . $sampleCount * $ratio . PHP_EOL;
-	echo 'new frequency: ' . $newFrequency . PHP_EOL;
-	echo PHP_EOL;
-}
+//$pathFiles = [
+////	'path1456102594.json',
+////	'path1456102803.json',
+////	'path1456154221.json',
+////	'path1456154553.json',
+////	'path-02-22-16-39-16.json',
+////	'path-02-22-16-44-16.json',
+////	'path-02-27-22-56-16.json',
+////	'path-02-27-22-56-16-resampled.json',
+//	'path-02-27-23-02-16.json',
+//	'path-02-27-23-02-16-resampled.json'
+//];
+//foreach ($pathFiles as $pathFile) {
+//	$data = json_decode(file_get_contents($pathFile), true);
+//	$path = $data['path'];
+//	$timeStep = 1;
+//	$sampleCount = count($path);
+//	$totalTime = $timeStep * $sampleCount;	//total time to fly the path
+//	$currentFrequency = $sampleCount / $totalTime;	//samples per second
+//	$maxFrequency = 70;
+//	$maxSampleCount = 2700;
+//	$maxAvailableFrequency = $maxSampleCount / $totalTime;
+//	$newFrequency = min($maxAvailableFrequency, $maxFrequency);	//pokud je maxFrequency větší než maxAvailableFrequency, bude nastavena maxAvailable, jinak maaxFrequency
+//	$ratio = floor($newFrequency / $currentFrequency);	//bude ratio krát více vzorků
+//	echo 'sample count: ' . $sampleCount . PHP_EOL;
+//	echo 'ratio: ' . $ratio . PHP_EOL;
+//	echo 'new sample count: ' . $sampleCount * $ratio . PHP_EOL;
+//	echo 'new frequency: ' . $newFrequency . PHP_EOL;
+//	echo PHP_EOL;
+//}
 
 //echo angleToLeft(0, 1) . PHP_EOL;
 //echo angleToRight(0, 1) . PHP_EOL;
@@ -166,3 +168,37 @@ function angleToRight($ang1, $ang2) {
 
 	return $ret;
 }
+
+
+$pathFiles = [
+//	'path-02-27-23-35-16.json',
+	'path-02-27-23-35-16-resampled.json'
+];
+
+foreach ($pathFiles as $file) {
+	$data = json_decode(file_get_contents($file), true);
+	$path = $data['path'];
+	foreach ($path as $state) {
+//		foreach ($state as $id => $uav) {
+		$uav = $state['51'];
+			$location = $uav['pointParticle']['location'];
+			$x = $location['x'];
+			$y = $location['y'];
+			echo "$x, $y" . PHP_EOL;
+//		}
+	}
+}
+
+
+function drawPaths($path, $name) {
+	$image = imagecreatetruecolor(800, 800);
+	$black = imagecolorallocate($image, 0, 0, 0);
+	$white = imagecolorallocate($image, 255, 255, 255);
+	imagefill($image, 0, 0, $white);
+
+	$previous = array_shift($path);
+
+	imagepng($image, $name . '.png');
+}
+
+
