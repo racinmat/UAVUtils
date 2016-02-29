@@ -1,104 +1,5 @@
 <?php
 
-class UAV {
-	/** @var double */
-	public $x;
-	/** @var double */
-	public $y;
-	/** @var double */
-	public $phi;
-
-	/**
-	 * UAV constructor.
-	 * @param float $x
-	 * @param float $y
-	 * @param float $phi
-	 */
-	public function __construct($x, $y, $phi)
-	{
-		$this->x = $x;
-		$this->y = $y;
-		$this->phi = $phi;
-	}
-
-	function __toString()
-	{
-//		return "x: " . $this->x . ", y: " . $this->y . ", angle: " . $this->phi . PHP_EOL;
-		return "" . $this->x . ", " . $this->y . ", angle: " . $this->phi . PHP_EOL;
-	}
-
-}
-
-class Control {
-	/** @var double */
-	public $step;
-	/** @var double */
-	public $curvature;
-
-	/**
-	 * Control constructor.
-	 * @param float $step
-	 * @param float $curvature
-	 */
-	public function __construct($step, $curvature)
-	{
-		$this->step = $step;
-		$this->curvature = $curvature;
-	}
-
-}
-
-function newSystem($uavZ, $curvature) {
-	$v = 30;//velocity
-	$K = $curvature;//curvature
-	$w = 4;//ascentVelocity
-	$timeStep = 0.5;
-
-	$phi = $uavZ;
-
-	if($K == 0)
-	{
-		$diffX = $v * cos((float) $phi) * $timeStep;
-		$diffY = $v * sin((float) $phi) * $timeStep;
-	} else
-	{
-		$diffX = (1 / $K) * (sin((float) ($phi + $K * $v * $timeStep)) - sin((float) $phi));
-		$diffY = - (1 / $K) * (cos((float) ($phi + $K * $v * $timeStep)) - cos((float) $phi));
-	}
-
-	echo $diffX . ", " . $diffY . PHP_EOL;
-
-	$diffZ = $K * $v * $timeStep;
-	return [$diffX, $diffY, $uavZ + $diffZ];
-}
-
-
-function calculateNewState(UAV $uav, Control $control) {
-	$newCoords = newSystem($uav->phi, $control->curvature);
-	return new UAV($uav->x + $newCoords[0], $uav->y + $newCoords[1], $newCoords[2]);
-}
-
-//echo $curvature2 = 0.02 . PHP_EOL;
-//
-//echo "new system 4 steps:";
-//$step1 = newSystem((float) 0, $curvature2);
-//$step2 = newSystem((float) $step1[2], $curvature2);
-//$step3 = newSystem((float) $step2[2], $curvature2);
-//$step4 = newSystem((float) $step3[2], $curvature2);
-//echo "step 1: " . PHP_EOL . $step1[0] . ', ' . $step1[1] . ", angle: " . $step1[2] . PHP_EOL;
-//echo "step 2: " . PHP_EOL . ($step1[0] + $step2[0]) . ', ' . ($step1[1] + $step2[1]) . ", angle: " . $step2[2] . PHP_EOL;
-//echo "step 3: " . PHP_EOL . ($step1[0] + $step2[0] + $step3[0]) . ', ' . ($step1[1] + $step2[1] + $step3[1]) . ", angle: " . $step3[2] . PHP_EOL;
-//echo "step 4: " . PHP_EOL . ($step1[0] + $step2[0] + $step3[0] + $step4[0]) . ', ' . ($step1[1] + $step2[1] + $step3[1] + $step4[1]) . ", angle: " . $step4[2] . PHP_EOL;
-
-//$uav = new UAV(80, 50, pi()/2);
-//echo $uav;
-//echo $uav2 = calculateNewState($uav, new Control(20, - $curvature2));
-//echo calculateNewState($uav2, new Control(20, - $curvature2));
-////echo calculateNewState($uav, new Control(20, $curvature2));
-//
-//echo "curvature = " . $curvature2;
-//echo "radius = " . 1/$curvature2;
-
 //$pathFiles = [
 ////	'path1456102594.json',
 ////	'path1456102803.json',
@@ -171,8 +72,8 @@ function angleToRight($ang1, $ang2) {
 
 
 $pathFiles = [
-//	'path-02-27-23-35-16.json',
-	'path-02-27-23-35-16-resampled.json'
+//	'path-02-28-23-35-16.json',
+	'path-02-28-23-35-16-resampled.json'
 ];
 
 foreach ($pathFiles as $file) {
@@ -189,16 +90,5 @@ foreach ($pathFiles as $file) {
 	}
 }
 
-
-function drawPaths($path, $name) {
-	$image = imagecreatetruecolor(800, 800);
-	$black = imagecolorallocate($image, 0, 0, 0);
-	$white = imagecolorallocate($image, 255, 255, 255);
-	imagefill($image, 0, 0, $white);
-
-	$previous = array_shift($path);
-
-	imagepng($image, $name . '.png');
-}
 
 

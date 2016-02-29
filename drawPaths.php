@@ -1,8 +1,8 @@
 <?php
 
 $pathFiles = [
-	'path-02-27-23-35-16.json',
-	'path-02-27-23-35-16-resampled.json'
+	'path-02-28-20-25-16-before-dubins.json',
+	'path-02-29-12-19-16-resampled.json'
 ];
 
 foreach ($pathFiles as $file) {
