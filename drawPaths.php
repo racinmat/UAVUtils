@@ -1,8 +1,10 @@
 <?php
 
+$starttime = microtime(true);
+
 $pathFiles = [
-	'path-02-28-20-25-16-before-dubins.json',
-	'path-02-29-12-19-16-resampled.json'
+	'path-03-02-18-31-16-resampled.json',
+	'path-03-02-18-32-16-optimized.json'
 ];
 
 foreach ($pathFiles as $file) {
@@ -36,4 +38,8 @@ function drawPaths($path, $name) {
 	imagepng($image, $name . '.png');
 }
 
+
+/* do stuff here */
+$endtime = microtime(true);
+echo $timediff = $endtime - $starttime;
 
