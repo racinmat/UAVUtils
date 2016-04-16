@@ -13,7 +13,6 @@ foreach ($pathFiles as $file) {
 	drawPaths($path, $file);
 }
 
-
 function drawPaths($path, $name) {
 	$image = imagecreatetruecolor(800, 800);
 	$black = imagecolorallocate($image, 0, 0, 0);
