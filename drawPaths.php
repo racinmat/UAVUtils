@@ -3,7 +3,10 @@
 $starttime = microtime(true);
 
 $pathFiles = [
-	"C:\\Users\\Azathoth\\Documents\\Visual Studio 2015\\Projects\\SwarmDeployment\\Win32\\Release\\output\\path-03-27-18-09-16-before-dubins.json",
+//	"C:\\Users\\Azathoth\\Documents\\Visual Studio 2015\\Projects\\SwarmDeployment\\Win32\\Release\\output\\path-03-27-18-09-16-before-dubins.json",
+//	"C:\\Users\\Azathoth\\Documents\\Visual Studio 2015\\Projects\\SwarmDeployment\\Win32\\ReleaseNoGui\\output\\path-04-17-16-23-49-00-optimized.json",
+	'C:\wamp\www\UAVUtils\dubinsOptimizations\oneUAV.json',
+	'C:\wamp\www\UAVUtils\dubinsOptimizations\oneUAVoptimized.json'
 ];
 
 foreach ($pathFiles as $file) {
@@ -17,7 +20,6 @@ foreach ($pathFiles as $file) {
 
 function drawPaths($path, $image) {
 	$colors = [];
-	$black = imagecolorallocate($image, 0, 0, 0);
 	$white = imagecolorallocate($image, 255, 255, 255);
 	imagefill($image, 0, 0, $white);
 
@@ -47,12 +49,15 @@ function drawPaths($path, $image) {
 function drawMap($map, $image) {
 	$obstacles = $map['obstacles'];
 	$goals = $map['goals'];
+	$obstacleAmplification = 30;
 	foreach ($obstacles as $obstacle) {
 		$x1 = $obstacle['location']['x'];
 		$x2 = $x1 + $obstacle['width'] + 1;
 		$y1 = $obstacle['location']['y'];
 		$y2 = $y1 + $obstacle['height'] + 1;
 		$color = imagecolorallocate($image, 120, 120, 120);
+		$amplifiedColor = imagecolorallocate($image, 200, 200, 200);
+		imagefilledrectangle($image, $x1 - 30, $y1 - 30, $x2 + 30, $y2 + 30, $amplifiedColor);
 		imagefilledrectangle($image, $x1, $y1, $x2, $y2, $color);
 	}
 
