@@ -5,10 +5,10 @@ require_once __DIR__ . '/vendor/autoload.php';
 $directory = 'C:\Users\Azathoth\Documents\Visual Studio 2015\Projects\SwarmDeployment\Win32\ReleaseNoGui\output';
 //$directory = 'C:\wamp\www\UAVUtils\dubinsOptimizations';
 
-//$frequencies = [1,2,3,4,5,6,8,10,12,14,16,18,20];
-$frequencies = [12,14,16];
+$frequencies = [1,2,4,6,8,10,12,14,16,18,20];
+//$frequencies = [12,14,16];
 foreach ($frequencies as $frequency) {
-	$dataFilesRegex = "~dubinsResult-04-(16|17)-16-\\d{2}-\\d{2}-\\d{2}-{$frequency}Hz.csv~";
+	$dataFilesRegex = "~dubinsResult-04-25-16-\\d{2}-\\d{2}-\\d{2}-{$frequency}Hz.csv~";
 	$data = [];
 	$maxIterations = 0;
 
@@ -59,7 +59,7 @@ foreach ($frequencies as $frequency) {
 	}
 
 
-	$outputHandle = fopen("output/$frequency Hz stats.csv", 'w+');
+	$outputHandle = fopen("output/experiment2/$frequency Hz stats.csv", 'w+');
 	foreach ($data as $index => $values) {
 		fputcsv($outputHandle, $values);
 	}

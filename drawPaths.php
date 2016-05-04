@@ -5,8 +5,16 @@ $starttime = microtime(true);
 $pathFiles = [
 //	"C:\\Users\\Azathoth\\Documents\\Visual Studio 2015\\Projects\\SwarmDeployment\\Win32\\Release\\output\\path-03-27-18-09-16-before-dubins.json",
 //	"C:\\Users\\Azathoth\\Documents\\Visual Studio 2015\\Projects\\SwarmDeployment\\Win32\\ReleaseNoGui\\output\\path-04-17-16-23-49-00-optimized.json",
-	'C:\wamp\www\UAVUtils\dubinsOptimizations\oneUAV.json',
-	'C:\wamp\www\UAVUtils\dubinsOptimizations\oneUAVoptimized.json'
+//	'C:\wamp\www\UAVUtils\dubinsOptimizations\oneUAV.json',
+//	'C:\wamp\www\UAVUtils\dubinsOptimizations\oneUAVoptimized.json',
+//	'C:\Users\Azathoth\Documents\Visual Studio 2015\Projects\SwarmDeployment\Win32\Release\output\path-03-27-17-49-16-before-dubins.json',
+//	'C:\Users\Azathoth\Documents\Visual Studio 2015\Projects\SwarmDeployment\Win32\ReleaseNoGui\output\path-04-26-16-01-18-03-optimized.json',
+//	'C:\Users\Azathoth\Documents\Visual Studio 2015\Projects\SwarmDeployment\Win32\ReleaseNoGui\output\path-04-26-16-01-14-46-optimized.json',
+//	'C:\Users\Azathoth\Documents\Visual Studio 2015\Projects\SwarmDeployment\Win32\ReleaseNoGui\output\path-04-26-16-01-13-28-optimized.json',
+//	'C:\Users\Azathoth\Documents\Visual Studio 2015\Projects\SwarmDeployment\Win32\ReleaseNoGui\output\path-04-26-16-01-10-35-optimized.json',
+	'C:\Users\Azathoth\Documents\Visual Studio 2015\Projects\SwarmDeployment\Win32\ReleaseNoGui\output\path-04-26-16-01-32-11-optimized.json',
+	'C:\Users\Azathoth\Documents\Visual Studio 2015\Projects\SwarmDeployment\Win32\ReleaseNoGui\output\path-04-26-16-01-24-04-optimized.json'
+
 ];
 
 foreach ($pathFiles as $file) {
