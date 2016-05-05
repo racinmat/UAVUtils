@@ -13,4 +13,4 @@ function runRRTPath($count) {
 
 }
 
-runRRTPath(250);
+runRRTPath(334);

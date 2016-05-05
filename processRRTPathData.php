@@ -13,7 +13,7 @@ $toGoalRegex = "~distance-to-goal-05-04-16-\\d{2}-\\d{2}-\\d{2}.csv~";
 
 foreach ($dataFilesRegexes as $i => $dataFilesRegex) {
 	$data = mergeData($dataFilesRegex, $directory);
-	$outputHandle = fopen("output/experiment3/distance-to-neighbour-$i.csv", 'w+');
+	$outputHandle = fopen("output/experiment4/distance-to-neighbour-$i.csv", 'w+');
 	foreach ($data as $index => $values) {
 		fputcsv($outputHandle, $values);
 	}
@@ -22,7 +22,7 @@ foreach ($dataFilesRegexes as $i => $dataFilesRegex) {
 
 
 $data = mergeData($toGoalRegex, $directory);
-$outputHandle = fopen("output/experiment3/distance-to-goal.csv", 'w+');
+$outputHandle = fopen("output/experiment4/distance-to-goal.csv", 'w+');
 foreach ($data as $index => $values) {
 	fputcsv($outputHandle, $values);
 }
